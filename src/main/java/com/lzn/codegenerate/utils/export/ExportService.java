@@ -7,10 +7,6 @@ import java.util.Map;
 
 /**
  * 表格文件导出方法
- *
- * @author zhangzhao zhangzhao2@sf-express.com
- *         createDate 2017/4/8 11:43
- * @version v1.0.0
  */
 public interface ExportService<T> extends Serializable{
 

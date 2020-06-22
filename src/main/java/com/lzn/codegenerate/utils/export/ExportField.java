@@ -7,10 +7,6 @@ import java.lang.annotation.Target;
 
 /**
  * 导出的字段注解
- *
- * @author zhangzhao zhangzhao2@sf-express.com
- *         createDate 2017/4/8 14:38
- * @version v1.0.0
  */
 @Target({ElementType.FIELD,ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

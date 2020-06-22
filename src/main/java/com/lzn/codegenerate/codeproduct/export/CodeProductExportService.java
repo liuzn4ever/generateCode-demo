@@ -1,8 +1,10 @@
 package com.lzn.codegenerate.codeproduct.export;
 
 
+import com.lzn.codegenerate.codeproduct.entity.CodeProduct;
 import com.lzn.codegenerate.codeproduct.service.CodeProductService;
-import com.sun.deploy.util.ParameterUtil;
+import com.lzn.codegenerate.utils.ParameterUtil;
+import com.lzn.codegenerate.utils.export.AbstractCSVExportService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
@@ -12,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import com.elog.fs.admin.codeproduct.export.CodeProductDTO;
 
 @Component
 public class CodeProductExportService extends AbstractCSVExportService<CodeProductDTO> {

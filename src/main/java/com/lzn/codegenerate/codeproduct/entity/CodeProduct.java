@@ -1,21 +1,16 @@
 package com.lzn.codegenerate.codeproduct.entity;
 
-import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableField;
-import com.baomidou.mybatisplus.activerecord.Model;
-import com.baomidou.mybatisplus.annotations.TableName;
-import com.elog.fs.admin.entity.IdEntity;
+
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.Table;
-import com.fengmi.ddj.common.entity.BaseEnttiyListener;
+import java.util.Date;
 /**
  * <p>
  * 代码生成
  * </p>
  *
- * @author DDJIT
- * @since 2020-06-19
  */
 
 @Entity

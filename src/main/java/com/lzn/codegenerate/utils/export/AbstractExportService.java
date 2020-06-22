@@ -1,8 +1,11 @@
 package com.lzn.codegenerate.utils.export;
 
-import com.fengmi.ddj.common.dao.redis.StringRedisDAO;
-import com.fengmi.ddj.common.util.DateUtil;
-import com.fengmi.ddj.common.util.LogUtil;
+
+import com.lzn.codegenerate.utils.DateUtils;
+import com.lzn.codegenerate.utils.redis.IRedisService;
+import freemarker.template.utility.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -16,6 +19,7 @@ import java.util.*;
 
 public abstract class AbstractExportService<T> implements ExportService<T>,Serializable {
 
+    public static final Logger logger = LoggerFactory.getLogger(AbstractExportService.class);
 
     private static final long serialVersionUID = -4462235660291304815L;
     /**
@@ -37,7 +41,7 @@ public abstract class AbstractExportService<T> implements ExportService<T>,Seria
      * 将导出的进度放在 redis 中管理, 对所有请求共享
      */
     @Resource
-    protected StringRedisDAO stringRedisDAO;
+    protected IRedisService redisService;
 
     protected boolean flagFreight = false;
 
@@ -81,7 +85,7 @@ public abstract class AbstractExportService<T> implements ExportService<T>,Seria
             }
             // 分页查询数据 并写进CSV文件中
             int total = queryTotal();
-            stringRedisDAO.incrBy(EXPORT_TOTAL_COUNT_CACHE_PREFIX.concat(sequenceId),total);
+            redisService.incrBy(EXPORT_TOTAL_COUNT_CACHE_PREFIX.concat(sequenceId),total);
             for (int count = 0; count < total; count += PER_SIZE) {
                 List<T> result = queryList(count, PER_SIZE);
                 for (T t : result) {
@@ -111,11 +115,11 @@ public abstract class AbstractExportService<T> implements ExportService<T>,Seria
                         }
                     }
                     writeLine(line);
-                    stringRedisDAO.incr(EXPORT_FINISH_COUNT_CACHE_PREFIX.concat(sequenceId));
+                    redisService.incr(EXPORT_FINISH_COUNT_CACHE_PREFIX.concat(sequenceId));
                 }
             }
         } catch (Exception e) {
-            LogUtil.error(LogUtil.COMMON_LOG," 导出创建文件时出错了", e);
+            logger.error("导出创建文件时出错了",e);
         }
         downloadFinish(outputStream);
         try {
@@ -158,7 +162,7 @@ public abstract class AbstractExportService<T> implements ExportService<T>,Seria
             String fieldType = field.getGenericType().toString();
             return getValue(value, fieldType);
         } catch (Exception e){
-            LogUtil.error(LogUtil.COMMON_LOG,"获取导出对象的属性时 出错了" , e);
+            logger.error("获取导出对象的属性时 出错了",e);
             return "";
         }
     }
@@ -173,7 +177,7 @@ public abstract class AbstractExportService<T> implements ExportService<T>,Seria
                 value = method.invoke(t);
             } catch (Exception e) {
                 e.printStackTrace();
-                LogUtil.error(LogUtil.COMMON_LOG,"获取导出对象的方法值时 出错了 ", e);
+                logger.error("获取导出对象的方法值时 出错了",e);
                 return "";
             }
             if(value == null){
@@ -182,7 +186,7 @@ public abstract class AbstractExportService<T> implements ExportService<T>,Seria
             String resultType = method.getReturnType().toString();
             return getValue(value, resultType);
         }catch (Exception e){
-            LogUtil.error(LogUtil.COMMON_LOG,"获取导出对象的方法值时 出错了" , e);
+            logger.error("获取导出对象的方法值时 出错了",e);
             return "";
         }
     }
@@ -191,7 +195,7 @@ public abstract class AbstractExportService<T> implements ExportService<T>,Seria
         if (valueType.equals("class java.lang.String")){
             return (String) value;
         }else if (valueType.equals("class java.util.Date")){
-            return DateUtil.formatDateCommon((Date) value);
+            return DateUtils.formatDate((Date) value);
         }else if (valueType.equals("class java.math.BigDecimal")){
             return value.toString();
         }else if(valueType.equals("class java.lang.Byte")){
@@ -227,7 +231,7 @@ public abstract class AbstractExportService<T> implements ExportService<T>,Seria
         }else if(valueType.equals("char")){
             return String.valueOf(value);
         }else{
-            LogUtil.error(LogUtil.COMMON_LOG,"暂不支持的数据类型 ===> {} " , valueType);
+            logger.error("暂不支持的数据类型 ===> {} ",valueType);
             return value.toString();
         }
     }

@@ -2,6 +2,8 @@ package com.lzn.codegenerate.utils.export;
 
 
 
+import com.opencsv.CSVWriter;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -10,10 +12,6 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * 默认Csv文件导出方法
- *
- * @author zhangzhao zhangzhao2@sf-express.com
- *         createDate 2017/5/24 16:09
- * @version v1.0.0
  */
 public abstract class AbstractCSVExportService<T> extends AbstractExportService<T> {
 
