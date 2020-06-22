@@ -1,0 +1,17 @@
+
+/**
+ * <p>
+ * $!{tablecomment} dao 接口
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+package ${package.Mapper};
+import ${package.Entity}.${entity};
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.repository.PagingAndSortingRepository;
+
+public interface ${table.mapperName} extends PagingAndSortingRepository<${entity}, Long>,JpaSpecificationExecutor<${entity}>{
+
+}
