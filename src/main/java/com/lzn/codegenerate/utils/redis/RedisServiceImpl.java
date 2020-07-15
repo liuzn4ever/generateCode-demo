@@ -11,9 +11,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Redis接口的实现
- *
- * @author zhangzhao zhangzhao2@sf-express.com
- * @version 1.0.0 2018/4/26 16:03
  */
 @Service
 public class RedisServiceImpl implements IRedisService {

@@ -5,7 +5,7 @@
  * @date 2013-2-27 下午4:54:13
  * @version V1.0
  */
-package com.lzn.codegenerate.codeproduct.entity;
+package com.lzn.codegenerate.utils.entity;
 
 import java.io.Serializable;
 import java.util.List;

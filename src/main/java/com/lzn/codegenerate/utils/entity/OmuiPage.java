@@ -5,7 +5,7 @@
  * @date 2014年3月31日 下午12:11:35
  * @version V1.0
  */
-package com.lzn.codegenerate.codeproduct.entity;
+package com.lzn.codegenerate.utils.entity;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 

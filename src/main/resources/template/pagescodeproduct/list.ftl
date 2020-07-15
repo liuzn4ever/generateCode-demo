@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>代码生成</title>
+<title></title>
 <link href="${base}/static/omui/css/elegant/om-all.css" rel="stylesheet" type="text/css" />
 <link href="${base}/static/admin/css/admin.css" rel="stylesheet" type="text/css" />
 
@@ -72,6 +72,15 @@
 			            {header : 'ID', name : 'id', width : 30, align : 'left',sort:'serverSide'},
 						{header : '创建时间', name : 'createDate', width : 150, align : 'left',sort:'serverSide',renderer :dataFormat1},
 						{header : '修改时间', name : 'modifyDate', width : 150, align : 'left',sort:'serverSide',renderer :dataFormat1},
+
+
+			{header : '', name : 'id',width : 90, align : 'left',sort:'serverSide'},
+
+
+			{header : '创建时间', name : 'createDate',width : 90, align : 'left',sort:'serverSide'},
+
+
+			{header : '更新时间', name : 'modifyDate',width : 90, align : 'left',sort:'serverSide'},
 
 
 			{header : '姓名', name : 'name',width : 90, align : 'left',sort:'serverSide'},

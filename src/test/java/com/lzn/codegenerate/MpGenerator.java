@@ -26,8 +26,9 @@ public class MpGenerator {
     //注意：开发时只在自己本地代码修改，不要提交、不要提交 不要提交
     //第一步修改 javaSrcDir 修改成自己项目存放java源代码的根路径
     static String javaSrcDir = "E:/githubPro/codeGenerate/src/main/java";
+    static String resourceDir = "E:/githubPro/codeGenerate/src/main/resources";
     //第二步修改 pageRootDir 修改成你要开发的模块的名称 存放ftl文件的文件夹的根路径
-    static String pageRootDir ="E:/githubPro/codeGenerate/src/main/templates/pages";
+    static String pageRootDir ="E:/githubPro/codeGenerate/src/main/resources/template/pages/";
 
 
     //第三步修改 packageName 修改成你要开发的模块的名称 包名 要小写 生产的entity service dao action文件夹和java代码会在下面
@@ -56,14 +57,14 @@ public class MpGenerator {
         gc.setActiveRecord(true);// 不需要ActiveRecord特性的请改为false
         gc.setEnableCache(false);// XML 二级缓存
         gc.setBaseResultMap(true);// XML ResultMap
-        gc.setBaseColumnList(false);// XML columList
+        gc.setBaseColumnList(true);// XML columList
         // .setKotlin(true) 是否生成 kotlin 代码
-        gc.setAuthor("DDJIT");
+        gc.setAuthor("liuzhinan");
 
         // 自定义文件命名，注意 %s 会自动填充表实体属性！
-         gc.setMapperName("%sDao");
+        gc.setMapperName("%sMybatisDao");
         // gc.setXmlName("%sDao");
-         gc.setServiceName("%sService");
+        gc.setServiceName("%sService");
 //         gc.setServiceImplName("%sService");
         // gc.setControllerName("%sAction");
         mpg.setGlobalConfig(gc);
@@ -83,9 +84,9 @@ public class MpGenerator {
             }
         });
         dsc.setDriverName("com.mysql.jdbc.Driver");
-        dsc.setUsername("test");
-        dsc.setPassword("123456");
-        dsc.setUrl("192.168.202.128:3306/codetest");
+        dsc.setUsername("");
+        dsc.setPassword("");
+        dsc.setUrl("");
         mpg.setDataSource(dsc);
 
         // 策略配置
@@ -93,12 +94,12 @@ public class MpGenerator {
         // strategy.setCapitalMode(true);// 全局大写命名 ORACLE 注意
         strategy.setTablePrefix(new String[] { tablePrefix });// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
-         strategy.setInclude(new String[] { tableName }); // 需要生成的表
+        strategy.setInclude(new String[] { tableName }); // 需要生成的表
         // strategy.setExclude(new String[]{"test"}); // 排除生成的表
         // 自定义实体父类
-         strategy.setSuperEntityClass("com.elog.fs.admin.entity.IdEntity");
+        strategy.setSuperEntityClass("com.elog.fs.admin.entity.IdEntity");
         // 自定义实体，公共字段
-         strategy.setSuperEntityColumns(new String[] { "id", "create_date","modify_date" });
+        //  strategy.setSuperEntityColumns(new String[] { "id", "create_date","modify_date" });
         // 自定义 mapper 父类
         // strategy.setSuperMapperClass("com.baomidou.demo.TestMapper");
         // 自定义 service 父类
@@ -118,9 +119,12 @@ public class MpGenerator {
         // 包配置
         PackageConfig pc = new PackageConfig();
         pc.setParent("com.lzn.codegenerate");
-        pc.setModuleName(packageName);
+        pc.setModuleName(null);
         pc.setMapper("dao");
-        pc.setController("action");
+        pc.setEntity("entity");
+        pc.setService("service");
+        pc.setServiceImpl("service.impl");
+        pc.setController("controller");
         mpg.setPackageInfo(pc);
 
         // 注入自定义配置，可以在 VM 中使用 cfg.abc 【可无】
@@ -135,43 +139,59 @@ public class MpGenerator {
             }
         };
 
+        List<FileOutConfig> focList = new ArrayList<FileOutConfig>();
+
+//        cfg.setFileOutConfigList(focList);
+//        mpg.setCfg(cfg);
+
+        //生成导出视图对象
+        focList.add(new FileOutConfig("/template/vm/vo.java.vm") {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                return javaSrcDir+"/com/lzn/codegenerate/export/"+tableInfo.getEntityName()+"VO.java";
+            }
+        });
+        //生成excel导出的服务类,
+        focList.add(new FileOutConfig("/template/vm/exportservice.java.vm") {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                return javaSrcDir+"/com/lzn/codegenerate/export/"+tableInfo.getEntityName()+"ExportService.java";
+            }
+        });
+        //生成mybatisDao文件到指定目录
+        focList.add(new FileOutConfig("/template/vm/mybatisdao.java.vm") {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                return  javaSrcDir+"/com/lzn/codegenerate/dao/"+tableInfo.getEntityName()+"MybatisDao.java";
+            }
+        });
+
+        //生成mapper文件到指定目录
+        focList.add(new FileOutConfig("/template/vm/mapper.xml.vm") {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                return resourceDir+"/mybatis/"+tableInfo.getEntityName()+"Mapper.xml";
+            }
+        });
 
         // 自定义 xxList.ftl 生成
-        List<FileOutConfig> focList = new ArrayList<FileOutConfig>();
-        focList.add(new FileOutConfig("/templates/vm/omui.list.ftl.vm") {
+        focList.add(new FileOutConfig("/template/vm/list.ftl.vm") {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输入文件名称
                 return pageRootDir+pageDirName+"/list.ftl";
             }
         });
-//        cfg.setFileOutConfigList(focList);
-//        mpg.setCfg(cfg);
-
-        //生成导出java文件
-        focList.add(new FileOutConfig("/templates/vm/exportdto.java.vm") {
-            @Override
-            public String outputFile(TableInfo tableInfo) {
-                return javaSrcDir+"/com/lzn/codegenerate/"+packageName+"/export/"+tableInfo.getEntityName()+"DTO.java";
-            }
-        });
-        focList.add(new FileOutConfig("/templates/vm/exportservice.java.vm") {
-            @Override
-            public String outputFile(TableInfo tableInfo) {
-                return javaSrcDir+"/com/lzn/codegenerate/"+packageName+"/export/"+tableInfo.getEntityName()+"ExportService.java";
-            }
-        });
-
         cfg.setFileOutConfigList(focList);
         mpg.setCfg(cfg);
 
         // 关闭默认 xml 生成，调整生成 至 根目录
         TemplateConfig tc = new TemplateConfig();
-        tc.setEntity("/templates/vm/entity.java.vm");
-        tc.setService("/templates/vm/service.java.vm");
+        tc.setEntity("/template/vm/entity.java.vm");
+        tc.setService("/template/vm/service.java.vm");
         tc.setServiceImpl(null);//设成null才会不生产
-        tc.setController("/templates/vm/controller.java.vm");
-        tc.setMapper("/templates/vm/jpadao.java.vm");
+        tc.setController("/template/vm/controller.java.vm");
+        tc.setMapper(null);
         tc.setXml(null);
         mpg.setTemplate(tc);
 

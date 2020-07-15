@@ -8,9 +8,6 @@ import java.util.Set;
 
 /**
  * Redis基本接口
- *
- * @author zhangzhao zhangzhao2@sf-express.com
- * @version 1.0.0 2018/4/26 18:30
  */
 interface IRedisBaseService {
 
